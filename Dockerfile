@@ -36,7 +36,10 @@ RUN npm install
 RUN npm i -g pm2
 COPY . .
 
+RUN chmod +x /app/docker-entrypoint.sh
+
 EXPOSE 3000
 
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
 CMD ["pm2-runtime", "src/index.js"]
 

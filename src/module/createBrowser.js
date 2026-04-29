@@ -1,5 +1,11 @@
 const { launch } = require("cloak-real-puppeteer-core")
 
+const useHeadless = () => {
+    if (process.env.HEADLESS === 'true') return true
+    if (process.env.HEADLESS === 'false') return false
+    return process.platform === 'linux' && !process.env.DISPLAY
+}
+
 async function createBrowser() {
     try {
         if (global.finished == true) return
@@ -16,7 +22,7 @@ async function createBrowser() {
         ]
 
         const browser = await launch({
-            headless: process.env.HEADLESS === 'true' ? true : false,
+            headless: useHeadless(),
             humanize: true,
             args,
             launchOptions: {

@@ -59,7 +59,9 @@ npm start
 | `timeOut` | Request timeout (ms) | `60000` |
 | `authToken` | API authentication token | `null` |
 | `SKIP_LAUNCH` | Skip initial browser launch | `false` |
-| `HEADLESS` | Run in headless mode | `false` |
+| `HEADLESS` | Run in headless mode. If unset on Linux without `DISPLAY`, automatically uses headless. | `auto` |
+| `DISABLE_XVFB` | Disable Docker entrypoint Xvfb startup | `false` |
+| `XVFB_WHD` | Xvfb screen size/depth | `1920x1080x24` |
 
 ## 📖 API Documentation
 
@@ -287,6 +289,8 @@ services:
       - browserLimit=20
       - timeOut=60000
       - authToken=frxldi-xyz-token
+      # Keep HEADLESS=false/unset to run headful CloakBrowser under Xvfb in Docker
+      - HEADLESS=false
     restart: unless-stopped
     shm_size: '2gb'
 ```
