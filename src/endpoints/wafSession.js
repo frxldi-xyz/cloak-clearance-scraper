@@ -37,36 +37,27 @@ function getSource({ url, proxy }) {
           username: proxy.username,
           password: proxy.password,
         });
-      let acceptLanguage = await findAcceptLanguage(page);
-      await page.setRequestInterception(true);
-      page.on("request", async (request) => request.continue());
-      page.on("response", async (res) => {
-        try {
-          if (
-            [200, 302].includes(res.status()) &&
-            [url, url + "/"].includes(res.url())
-          ) {
-            await page
-              .waitForNavigation({ waitUntil: "load", timeout: 5000 })
-              .catch(() => {});
-            const cookies = await page.cookies();
-            let headers = await res.request().headers();
-            delete headers["content-type"];
-            delete headers["accept-encoding"];
-            delete headers["accept"];
-            delete headers["content-length"];
-            headers["accept-language"] = acceptLanguage;
-            isResolved = true;
-            clearInterval(cl);
-            await closeContext(context);
-            resolve({ cookies, headers });
-          }
-        } catch (e) {}
-      });
-
       await page.goto(url, {
         waitUntil: "domcontentloaded",
+        timeout: global.timeOut || 60000,
       });
+
+      await page.waitForNetworkIdle({ idleTime: 1000, timeout: 10000 }).catch(() => {});
+      await new Promise((resolve) => setTimeout(resolve, Number(process.env.PAGE_SETTLE_TIME || 2000)));
+
+      const cookies = await page.cookies();
+      const acceptLanguage = await findAcceptLanguage(page);
+      const headers = {
+        "user-agent": await page.evaluate(() => navigator.userAgent).catch(() => undefined),
+        "accept-language": acceptLanguage,
+      };
+
+      Object.keys(headers).forEach((key) => headers[key] === undefined && delete headers[key]);
+
+      isResolved = true;
+      clearInterval(cl);
+      await closeContext(context);
+      resolve({ cookies, headers });
     } catch (e) {
       if (!isResolved) {
         isResolved = true;

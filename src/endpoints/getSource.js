@@ -25,28 +25,19 @@ function getSource({ url, proxy }) {
           password: proxy.password,
         });
 
-      await page.setRequestInterception(true);
-      page.on("request", async (request) => request.continue());
-      page.on("response", async (res) => {
-        try {
-          if (
-            [200, 302].includes(res.status()) &&
-            [url, url + "/"].includes(res.url())
-          ) {
-            await page
-              .waitForNavigation({ waitUntil: "load", timeout: 5000 })
-              .catch(() => {});
-            const html = await page.content();
-            isResolved = true;
-            clearInterval(cl);
-            await closeContext(context);
-            resolve(html);
-          }
-        } catch (e) {}
-      });
       await page.goto(url, {
         waitUntil: "domcontentloaded",
+        timeout: global.timeOut || 60000,
       });
+
+      await page.waitForNetworkIdle({ idleTime: 1000, timeout: 10000 }).catch(() => {});
+      await new Promise((resolve) => setTimeout(resolve, Number(process.env.PAGE_SETTLE_TIME || 2000)));
+
+      const html = await page.content();
+      isResolved = true;
+      clearInterval(cl);
+      await closeContext(context);
+      resolve(html);
     } catch (e) {
       if (!isResolved) {
         isResolved = true;
