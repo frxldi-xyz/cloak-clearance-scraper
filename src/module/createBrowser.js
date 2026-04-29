@@ -11,8 +11,9 @@ async function createBrowser() {
         if (global.finished == true) return
 
         global.browser = null
+        global.browserError = null
 
-        // console.log('Launching the browser...');
+        console.log(`Launching CloakBrowser... headless=${useHeadless()} display=${process.env.DISPLAY || 'none'}`);
 
         const args = [
             '--no-sandbox',
@@ -31,7 +32,7 @@ async function createBrowser() {
             }
         })
 
-        // console.log('Browser launched');
+        console.log('CloakBrowser launched');
 
         global.browser = browser;
 
@@ -43,7 +44,8 @@ async function createBrowser() {
         })
 
     } catch (e) {
-        console.log(e.message);
+        global.browserError = e?.stack || e?.message || String(e)
+        console.error('Failed to launch CloakBrowser:', global.browserError);
         if (global.finished == true) return
         await new Promise(resolve => setTimeout(resolve, 3000));
         await createBrowser();

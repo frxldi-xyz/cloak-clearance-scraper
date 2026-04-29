@@ -20,6 +20,7 @@ fastify.get('/', async (request, reply) => {
         version: pkg.version,
         description: pkg.description,
         status: global.browser ? 'ready' : 'initializing',
+        browserError: global.browser ? undefined : global.browserError,
         activeSessions: global.browserLength,
         maxSessions: global.browserLimit,
         uptime: process.uptime()
@@ -32,7 +33,7 @@ fastify.get('/health', async (request, reply) => {
         return { status: 'healthy' }
     } else {
         reply.code(503)
-        return { status: 'initializing' }
+        return { status: 'initializing', browserError: global.browserError }
     }
 })
 
@@ -64,8 +65,12 @@ fastify.post('/cf-clearance-scraper', async (request, reply) => {
     }
 
     if (process.env.SKIP_LAUNCH != 'true' && !global.browser) {
-        reply.code(500)
-        return { code: 500, message: 'The scanner is not ready yet. Please try again a little later.' }
+        reply.code(503)
+        return {
+            code: 503,
+            message: 'The scanner is not ready yet. Please try again a little later.',
+            browserError: global.browserError
+        }
     }
 
     var result = { code: 500 }
