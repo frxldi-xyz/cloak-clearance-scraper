@@ -1,4 +1,4 @@
-const { connect } = require("cloak-r-browser")
+const { connect } = require("cloak-r-brwoser")
 
 const useHeadless = () => {
     if (process.env.HEADLESS === 'true') return true
