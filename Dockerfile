@@ -33,7 +33,7 @@ COPY package*.json ./
 
 RUN npm update
 RUN npm install
-RUN node -e "require('cloak-real-puppeteer-core').ensureBinary().then(p => console.log('CloakBrowser binary:', p))"
+RUN node -e "require('cloak-r-browser').ensureBinary().then(p => console.log('CloakBrowser binary:', p))"
 RUN npm i -g pm2
 COPY . .
 

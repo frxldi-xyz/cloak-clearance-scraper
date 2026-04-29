@@ -1,4 +1,4 @@
-const { launch } = require("cloak-real-puppeteer-core")
+const { connect } = require("cloak-r-browser")
 
 const useHeadless = () => {
     if (process.env.HEADLESS === 'true') return true
@@ -22,14 +22,12 @@ async function createBrowser() {
             '--disable-gpu'
         ]
 
-        const browser = await launch({
+        const { browser } = await connect({
             headless: useHeadless(),
-            humanize: true,
-            args,
-            launchOptions: {
-                defaultViewport: null,
-                args
-            }
+            turnstile: true,
+            connectOption: { defaultViewport: null },
+            disableXvfb: false,
+            args
         })
 
         console.log('CloakBrowser launched');
