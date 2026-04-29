@@ -1,0 +1,63 @@
+{
+  "name": "cloak-clearance-scraper",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "jest --detectOpenHandles --verbose"
+  },
+  "jest": {
+    "testMatch": [
+      "**/tests/**/*.js"
+    ],
+    "verbose": true
+  },
+  "keywords": [
+    "cloak",
+    "cloak-browser",
+    "cloak-real-puppeteer-core",
+    "cf-clearance",
+    "cloudflare",
+    "cloudflare-bypass",
+    "waf",
+    "scraper",
+    "puppeteer",
+    "turnstile",
+    "turnstile-solver",
+    "bypass",
+    "undetected",
+    "stealth",
+    "web-scraping",
+    "anti-detect",
+    "captcha-solver"
+  ],
+  "author": "frxldi-xyz",
+  "license": "ISC",
+  "description": "Advanced Cloudflare bypass solution powered by Cloak Browser via cloak-real-puppeteer-core. API-compatible with brave-clearance-scraper.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frxldi-xyz/cloak-clearance-scraper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/frxldi-xyz/cloak-clearance-scraper/issues"
+  },
+  "homepage": "https://github.com/frxldi-xyz/cloak-clearance-scraper#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@fastify/cors": "^10.0.2",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "cloak-real-puppeteer-core": "^24.37.5-cloak.1",
+    "dotenv": "^16.4.5",
+    "fastify": "^5.2.1",
+    "jest": "^29.7.0",
+    "light-my-request": "^6.5.1",
+    "supertest": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.278",
+    "@types/firefox-webext-browser": "^120.0.5"
+  }
+}
