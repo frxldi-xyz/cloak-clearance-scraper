@@ -1,19 +1,18 @@
+const { createContext, closeContext } = require("../module/browserContext");
+
 function getSource({ url, proxy }) {
   return new Promise(async (resolve, reject) => {
-    if (!url) return reject("Missing url parameter");
-    const context = await global.browser
-      .createBrowserContext({
-        proxyServer: proxy ? `http://${proxy.host}:${proxy.port}` : undefined, // https://pptr.dev/api/puppeteer.browsercontextoptions
-      })
-      .catch(() => null);
-    if (!context) return reject("Failed to create browser context");
+    if (!url) return reject(new Error("Missing url parameter"));
+    const context = await createContext({ proxy }).catch(() => null);
+    if (!context) return reject(new Error("Failed to create browser context"));
 
     let isResolved = false;
 
     var cl = setTimeout(async () => {
       if (!isResolved) {
-        await context.close();
-        reject("Timeout Error");
+        isResolved = true;
+        await closeContext(context);
+        reject(new Error("Timeout Error"));
       }
     }, global.timeOut || 60000);
 
@@ -38,9 +37,9 @@ function getSource({ url, proxy }) {
               .waitForNavigation({ waitUntil: "load", timeout: 5000 })
               .catch(() => {});
             const html = await page.content();
-            await context.close();
             isResolved = true;
             clearInterval(cl);
+            await closeContext(context);
             resolve(html);
           }
         } catch (e) {}
@@ -50,9 +49,10 @@ function getSource({ url, proxy }) {
       });
     } catch (e) {
       if (!isResolved) {
-        await context.close();
+        isResolved = true;
+        await closeContext(context);
         clearInterval(cl);
-        reject(e.message);
+        reject(e);
       }
     }
   });
